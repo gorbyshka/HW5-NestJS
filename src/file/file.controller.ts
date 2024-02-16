@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Controller,
   HttpCode,
   Post,
@@ -9,7 +8,7 @@ import {
 
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
-import { VideoUploadDto } from './file.dto';
+import { CustomError } from 'src/error/customError';
 
 @Controller('upload')
 export class FileController {
@@ -19,11 +18,11 @@ export class FileController {
   @Post()
   @UseInterceptors(FileInterceptor('video'))
   @HttpCode(200)
-  async uploadVideo(@UploadedFile() video: VideoUploadDto): Promise<Object> {
+  async uploadVideo(@UploadedFile() video: Express.Multer.File): Promise<Object> {
 
     try { return await this.fileService.uploadVideo(video) }
 
-    catch (error) { throw new BadRequestException(error.message) }
+    catch (error) { new CustomError('Error processing on Controller', 500) }
 
   }
 

@@ -4,14 +4,29 @@ import { FileController } from './file.controller';
 import { FileService } from './file.service';
 
 @Module({
+
   imports: [
+
     MulterModule.register({
-      dest: './uploads', 
+
+      dest: './uploads',
+
+      fileFilter: (req, file, cb) => {
+
+        if (file.mimetype === 'video/mp4') cb(null, true);
+
+        else cb(new Error('Invalid file type'), false);
+
+      },
+
     }),
+
   ],
+
   controllers: [FileController],
+
   providers: [FileService],
+
 })
 
-export class FileModule {}
- 
+export class FileModule { }
